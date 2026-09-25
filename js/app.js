@@ -147,6 +147,13 @@ function updateCartQty(id, delta) {
     }
 }
 
+window.removeFromCart = function(id) {
+    if(confirm('Hapus menu ini dari keranjang?')) {
+        cart = cart.filter(i => i.id !== id);
+        renderCart();
+    }
+}
+
 let currentDiscountPercent = 0;
 
 function renderCart() {
@@ -173,11 +180,12 @@ function renderCart() {
                 <div class="cart-item-controls">
                     <span class="cart-item-price">${formatRp(item.harga)}</span>
                     <div class="qty-control">
-                        <button class="qty-btn" onclick="updateCartQty(${item.id}, -1)"><i class="fa-solid fa-minus"></i></button>
+                        <button type="button" class="qty-btn" onclick="updateCartQty(${item.id}, -1)"><i class="fa-solid fa-minus"></i></button>
                         <input type="text" class="qty-input" value="${item.qty}" readonly>
-                        <button class="qty-btn" onclick="updateCartQty(${item.id}, 1)"><i class="fa-solid fa-plus"></i></button>
+                        <button type="button" class="qty-btn" onclick="updateCartQty(${item.id}, 1)"><i class="fa-solid fa-plus"></i></button>
                     </div>
                     <span class="cart-item-total">${formatRp(item.harga * item.qty)}</span>
+                    <button type="button" class="btn-icon" style="color:var(--danger-color); margin-left:8px;" onclick="removeFromCart(${item.id})"><i class="fa-solid fa-trash-can"></i></button>
                 </div>
             `;
             cartContainer.appendChild(div);
@@ -245,7 +253,8 @@ function setupEventListeners() {
     });
 
     // Cart actions
-    document.getElementById('clear-cart').addEventListener('click', () => {
+    document.getElementById('clear-cart').addEventListener('click', (e) => {
+        e.preventDefault();
         if(confirm('Kosongkan keranjang?')) {
             cart = [];
             currentDiscountPercent = 0;
